@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Kafka } = require("kafkajs");
-
+const fs = require("fs");
 const port = process.env.PORT;
 const app = express();
 
@@ -55,7 +55,20 @@ const registrar = async () => {
 
 const aceptar_caso = (rut) => {
 	let index = miembros.findIndex((i) => i.rut === rut);
-	if (index >= 0) miembrosaceptados.push(miembros.splice(index, 1)[0]);
+	if (index >= 0) {
+		miembrosaceptados.push(miembros.splice(index, 1)[0]);
+		fs.writeFile(
+			"miembrosaceptados.txt",
+			JSON.stringify(miembrosaceptados),
+			(err) => {
+				// throws an error, you could also catch it here
+				if (err) throw err;
+
+				// success case, the file was saved
+				console.log("saved");
+			}
+		);
+	}
 };
 
 app.post("/aceptarcaso", async (req, res) => {
@@ -66,12 +79,10 @@ app.post("/aceptarcaso", async (req, res) => {
 
 app.get("/vermiembros", async (req, res) => {
 	console.log(miembros);
-	res
-		.status(200)
-		.json({
-			miembrospendientes: miembros,
-			miembrosaceptados: miembrosaceptados,
-		});
+	res.status(200).json({
+		miembrospendientes: miembros,
+		miembrosaceptados: miembrosaceptados,
+	});
 });
 
 app.listen(port, () => {

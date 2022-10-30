@@ -45,8 +45,7 @@ app.post("/vender", async (req, res) => {
 	});
 	await producer.send({
 		topic: "coordenadas",
-		messages: [{ value: JSON.stringify(carrito) }],
-		partition: 0,
+		messages: [{ value: JSON.stringify(carrito), partition: 0 }],
 	});
 	await producer.disconnect().then(
 		res.status(200).json({
@@ -70,15 +69,13 @@ app.post("/registro", async (req, res) => {
 		await producer.connect();
 		await producer.send({
 			topic: "nuevosmiembros",
-			messages: [{ value: JSON.stringify(miembro) }],
-			partition: 1,
+			messages: [{ value: JSON.stringify(miembro), partition: 1 }],
 		});
 	} else if (miembro.premium === "no") {
 		await producer.connect();
 		await producer.send({
 			topic: "nuevosmiembros",
-			messages: [{ value: JSON.stringify(miembro) }],
-			partition: 0,
+			messages: [{ value: JSON.stringify(miembro), partition: 0 }],
 		});
 	} else {
 		res.status(200).json({ error: "error" });

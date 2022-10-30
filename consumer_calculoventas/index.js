@@ -52,7 +52,30 @@ const nuevo_maestro = (nombre) => {
 
 const ventas_totales = async () => {
 	const consumer = kafka.consumer({ groupId: "ventas" });
+	await consumer.connect();
+	await consumer.subscribe({ topic: "venta" });
+	await consumer.run({
+		eachMessage: async ({ topic, partition, message }) => {
+			if (message.value) {
+				var data = JSON.parse(message.value.toString());
+				console.log(
+					"mensaje:",
+					message.value,
+					"data:",
+					data,
+					"datacarrito:",
+					data.idcarrito
+				);
+				// var data = message.value
+				nuevo_maestro(data.idcarrito);
+				agregar_venta(data.idcarrito, data.idcliente, parseInt(data.cantidad));
+			}
+		},
+	});
+};
 
+const ventas_totales_premium = async () => {
+	const consumer = kafka.consumer({ groupId: "ventas" });
 	await consumer.connect();
 	await consumer.subscribe({ topic: "venta" });
 	await consumer.run({
@@ -76,6 +99,7 @@ const ventas_totales = async () => {
 };
 
 app.get("/consumir", async (req, res) => {
+	ventas_totales();
 	console.log(maestros_sopaipilleros);
 	res.status(200).json({ maestros: maestros_sopaipilleros });
 });
@@ -86,6 +110,4 @@ app.get("/calculardiario", async (req, res) => {
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
-
-	ventas_totales();
 });

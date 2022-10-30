@@ -13,6 +13,7 @@ const kafka = new Kafka({
 });
 
 let pedidos = new Map();
+let carritos = new Map();
 
 const nueva_relacion = (nombre, cantidad) => {
 	let bool = false;
@@ -29,8 +30,38 @@ const nueva_relacion = (nombre, cantidad) => {
 
 let npedido = 0;
 
-const check_stock = async () => {
-	const consumer = kafka.consumer({ groupId: "stock" });
+let lista_pedidos = [];
+
+const check_stock = () => {
+	let pedido = {};
+	carritos.forEach((value, key) => {
+		if (value < 20) {
+			pedidos.set(key, value);
+			carritos.delete(key);
+			console.log(
+				"El carrito ",
+				key,
+				"se ha registrado para reposición de sopaipillas"
+			);
+		}
+	});
+	if (pedidos.size === 5) {
+		console.log("Proxima reposicion, pedido N°:", npedido);
+		pedidos.forEach((value, key) => {
+			pedido.nombrecarrito = key;
+			pedido.stock_restante = value;
+			pedido.npedido = npedido;
+			lista_pedidos.push(pedido);
+
+			console.log("Carrito", key, " ultimo stock:", value);
+		});
+		npedido += 1;
+		pedidos.clear();
+	}
+};
+
+const receive_stock = async () => {
+	const consumer = kafka.consumer({ groupId: "stocks" });
 
 	await consumer.connect();
 	await consumer.subscribe({ topic: "stock" });
@@ -47,34 +78,19 @@ const check_stock = async () => {
 					"Stock restaste:",
 					data.stock_restante
 				);
-				if (data.stock_restante < 20) {
-					pedidos.set(data.idcarrito, data.stock_restante);
-					console.log(
-						"El carrito ",
-						data.idcarrito,
-						"se ha registrado para reposición de sopaipillas"
-					);
-
-					if (pedidos.size === 5) {
-						console.log("Proxima reposicion, pedido N°:", npedido);
-						npedido += 1;
-						pedidos.forEach((key, value) => {
-							console.log("Carrito", key, " ultimo stock:", value);
-						});
-						pedidos.clear();
-					}
-				}
+				carritos.set(data.idcarrito, parseInt(data.stock_restante));
+				check_stock();
 			}
 		},
 	});
 };
 
 app.get("/ver_reposiciones", async (req, res) => {
-	res.status(200).json({ "ultimas reposiciones ": pedidos });
-	console.log("Se necesita reposicion para: ", pedidos);
+	res.status(200).json({ "ultimas reposiciones ": lista_pedidos });
+	console.log("Se necesita reposicion para: ", lista_pedidos);
 });
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
-	check_stock();
+	receive_stock();
 });
