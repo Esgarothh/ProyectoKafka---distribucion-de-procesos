@@ -22,35 +22,9 @@ services:
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
     ports:
       - 9092:9092
-  login:
+  servidor:
     build:
-      context: ./login/
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - zookeeper
-      - kafka
-    environment:
-      PORT: 3000
-      kafkaHost: kafka:9092
-    ports:
-      - 13000:3000
-  blocked:
-    build:
-      context: ./blocked/
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - zookeeper
-      - kafka
-    environment:
-      PORT: 3000
-      kafkaHost: kafka:9092
-    ports:
-      - 15000:3000
-  vendedor:
-    build:
-      context: ./producer_venta/
+      context: ./servidor/
       dockerfile: Dockerfile
     restart: always
     depends_on:
@@ -61,7 +35,7 @@ services:
       kafkaHost: kafka:9092
     ports:
       - 1000:3000
-  calculoventas:
+  consumerventas:
     build:
       context: ./consumer_calculoventas/
       dockerfile: Dockerfile
@@ -74,7 +48,7 @@ services:
       kafkaHost: kafka:9092
     ports:
       - 2000:3000
-  calculostock:
+  consumerstock:
     build:
       context: ./consumer_stock/
       dockerfile: Dockerfile
@@ -87,7 +61,7 @@ services:
       kafkaHost: kafka:9092
     ports:
       - 3000:3000
-  calculoubicaciones:
+  consumercoordenadas:
     build:
       context: ./consumer_ubicaciones/
       dockerfile: Dockerfile
@@ -100,7 +74,7 @@ services:
       kafkaHost: kafka:9092
     ports:
       - 4000:3000
-  consumermiembro:
+  consumermiembros:
     build:
       context: ./consumer_nuevoMiembro/
       dockerfile: Dockerfile
