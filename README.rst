@@ -1,9 +1,8 @@
-Template for the Read the Docs tutorial
-=======================================
+Tarea2 sistemas distribuidos
+Sebastian Arroyo y Matias gastellu
 
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
 
-Read the tutorial here:
-
-https://docs.readthedocs.io/en/stable/tutorial/
+Inicializar con 
+```sh
+    docker-compose up -d --build 
+```
