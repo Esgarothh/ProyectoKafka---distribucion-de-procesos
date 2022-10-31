@@ -58,7 +58,7 @@ const aceptar_caso = (rut) => {
 	if (index >= 0) {
 		miembrosaceptados.push(miembros.splice(index, 1)[0]);
 		fs.writeFile(
-			"miembrosaceptados.txt",
+			"miembros_aceptados.txt",
 			JSON.stringify(miembrosaceptados),
 			(err) => {
 				// throws an error, you could also catch it here

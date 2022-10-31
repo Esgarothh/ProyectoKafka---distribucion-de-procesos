@@ -11,9 +11,7 @@ app.use(express.json());
 const kafka = new Kafka({
 	brokers: [process.env.kafkaHost],
 });
-
 let maestros_sopaipilleros = [];
-
 const agregar_maestro = (idMs, m) => {
 	let base = {};
 	base.idcarrito = idMs;
@@ -23,7 +21,6 @@ const agregar_maestro = (idMs, m) => {
 	base.promedio = 0;
 	m.push(base);
 };
-
 const agregar_venta = (ms, idcliente, cantidad_sopaipillas) => {
 	let cliente = {};
 	cliente.nombre = idcliente;
@@ -49,7 +46,6 @@ const nuevo_maestro = (nombre) => {
 	if (!bool) agregar_maestro(nombre, maestros_sopaipilleros);
 	if (bool) console.log("maestro ya registrado");
 };
-
 const ventas_totales = async () => {
 	const consumer = kafka.consumer({ groupId: "ventas" });
 	await consumer.connect();
@@ -58,39 +54,6 @@ const ventas_totales = async () => {
 		eachMessage: async ({ topic, partition, message }) => {
 			if (message.value) {
 				var data = JSON.parse(message.value.toString());
-				console.log(
-					"mensaje:",
-					message.value,
-					"data:",
-					data,
-					"datacarrito:",
-					data.idcarrito
-				);
-				// var data = message.value
-				nuevo_maestro(data.idcarrito);
-				agregar_venta(data.idcarrito, data.idcliente, parseInt(data.cantidad));
-			}
-		},
-	});
-};
-
-const ventas_totales_premium = async () => {
-	const consumer = kafka.consumer({ groupId: "ventas" });
-	await consumer.connect();
-	await consumer.subscribe({ topic: "venta" });
-	await consumer.run({
-		eachMessage: async ({ topic, partition, message }) => {
-			if (message.value) {
-				var data = JSON.parse(message.value.toString());
-				console.log(
-					"mensaje:",
-					message.value,
-					"data:",
-					data,
-					"datacarrito:",
-					data.idcarrito
-				);
-				// var data = message.value
 				nuevo_maestro(data.idcarrito);
 				agregar_venta(data.idcarrito, data.idcliente, parseInt(data.cantidad));
 			}

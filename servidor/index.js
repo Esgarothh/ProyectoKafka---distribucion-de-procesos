@@ -14,8 +14,10 @@ const kafka = new Kafka({
 });
 
 const producer = kafka.producer();
-
 app.post("/vender", async (req, res) => {
+	await producer.connect();
+
+	await producer.connect();
 	let tiempo = new Date().getTime();
 	let venta = {
 		idcarrito: req.body.idcarrito,
@@ -23,6 +25,11 @@ app.post("/vender", async (req, res) => {
 		cantidad: req.body.cantidad,
 		tiempo: tiempo,
 	};
+	await producer.send({
+		topic: "venta",
+		messages: [{ value: JSON.stringify(venta) }],
+	});
+	
 	let carrito = {
 		idcarrito: req.body.idcarrito,
 		cordx: req.body.cordx,
@@ -32,17 +39,15 @@ app.post("/vender", async (req, res) => {
 		idcarrito: req.body.idcarrito,
 		stock_restante: req.body.stock_restante,
 	};
-
-	console.log("esta intentando ingresar.");
-	await producer.connect();
-	await producer.send({
-		topic: "venta",
-		messages: [{ value: JSON.stringify(venta) }],
-	});
 	await producer.send({
 		topic: "stock",
 		messages: [{ value: JSON.stringify(stock) }],
 	});
+
+	console.log("esta intentando ingresar.");
+	
+
+
 	await producer.send({
 		topic: "coordenadas",
 		messages: [{ value: JSON.stringify(carrito), partition: 0 }],
