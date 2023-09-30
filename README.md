@@ -1,4 +1,4 @@
-Tarea2 sistemas distribuidos
+Proyecto de sistemas distribuidos
 Sebastian Arroyo y Matias gastellu
 
 
