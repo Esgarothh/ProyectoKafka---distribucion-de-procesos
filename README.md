@@ -13,20 +13,21 @@ Make sure you have Docker and Docker Compose installed on your machine.
 
 ### Installation
 1. Clone the repository:
-   ```sh
-   git clone https://github.com/your-username/kafka-consumer-producer.git
+                                    ```sh
+                                 git clone https://github.com/Esgarothh/ProyectoKafka---distribucion-de-procesos
+                        ```   
 Navigate to the project directory:
+   
+      ```sh
+         cd kafka-consumer-producer
+        ```   
+         Initialize the project with Docker Compose:
 
-sh
-Copy code
-cd kafka-consumer-producer
-Initialize the project with Docker Compose:
-
-sh
-Copy code
-docker-compose up -d --build
-This command will set up the necessary containers and dependencies for your Kafka consumer-producer project.
-
+     
+```sh
+      docker-compose up -d --build
+      This command will set up the necessary containers and dependencies for your Kafka consumer-producer project.
+  ```   
 Usage
 Now that your project is up and running, explore the incredible capabilities of Kafka in a distributed system. Feel free to customize the project to suit your specific needs.
 
@@ -37,19 +38,19 @@ Fork the repository.
 
 Create a new branch for your feature or bug fix:
 
-sh
-Copy code
+```sh
 git checkout -b feature/new-feature
+  ```   
 Make your changes and commit them:
 
-sh
-Copy code
+```sh
 git commit -m "Add new feature"
+  ```   
 Push to your branch:
 
-sh
-Copy code
+```sh
 git push origin feature/new-feature
+  ```   
 Create a pull request on GitHub.
 
 Let's build something incredible together!
